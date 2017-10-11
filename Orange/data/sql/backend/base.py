@@ -21,6 +21,7 @@ class Backend(metaclass=Registry):
     """
 
     display_name = ""
+    limit = 21 # limit of the number of discrete values
 
     def __init__(self, connection_params):
         self.connection_params = connection_params
@@ -100,10 +101,10 @@ class Backend(metaclass=Registry):
 
         query = self.create_sql_query(table_name, fields,
                                       group_by=fields, order_by=fields,
-                                      limit=21)
+                                      limit=self.limit)
         with self.execute_sql_query(query) as cur:
             values = cur.fetchall()
-        if len(values) > 20:
+        if len(values) > self.limit-1:
             return ()
         else:
             return tuple(str(x[0]) for x in values)
